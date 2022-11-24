@@ -40,13 +40,17 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
             String authorisationHeader = request.getHeader(AUTHORIZATION);
             if(authorisationHeader != null && authorisationHeader.startsWith("Bearer ")){
                 try {
+                    //Obtenir le token
                     String token = authorisationHeader.substring("Bearer ".length());
                     Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
-                    //Verify token
+                    //Algorithm qui vérifie le token et decode
                     JWTVerifier verifier = JWT.require(algorithm).build();
                     DecodedJWT decodedJWT = verifier.verify(token);
+                    //Obtenir le nom d'utilisateur
                     String username = decodedJWT.getSubject();
+                    //Obtenir le role
                     String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+                    //Verifier l'authorisation
                     Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
                     stream(roles).forEach(role -> {
                         authorities.add(new SimpleGrantedAuthority(role));
@@ -60,7 +64,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     log.error("Error logging in {}", exception.getMessage());
                     response.setHeader("error", exception.getMessage());
                     response.setStatus(FORBIDDEN.value());
-                    //response.sendError(FORBIDDEN.value());
+                    //Message pour afficher que le token à expirer
                     Map<String, String> error = new HashMap<>();
                     error.put("error_message", exception.getMessage());
                     response.setContentType(APPLICATION_JSON_VALUE);

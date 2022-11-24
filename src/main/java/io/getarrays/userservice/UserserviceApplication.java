@@ -22,18 +22,18 @@ public class UserserviceApplication {
 		SpringApplication.run(UserserviceApplication.class, args);
 	}
 
-
 	@Bean
 	PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
+
 	@Bean
 	CommandLineRunner run(UserService userService){
 		return args -> {
 			Role r1=userService.saveRole(new Role(null, "ROLE_USER"));
-			Role r2 = userService.saveRole(new Role(null, "ROLE_MANAGER"));
-			Role r3 = userService.saveRole(new Role(null, "ROLE_ADMIN"));
-			Role r4 = userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
+			Role r2 = userService.saveRole(new Role(null, "ROLE_ADMIN"));
+			//Role r3 = userService.saveRole(new Role(null, "ROLE_MANAGER"));
+			//Role r4 = userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
 			User u1= userService.saveUser(new User(null, "mary", "marytraore", "1234", new ArrayList<>()));
 			User u2 = userService.saveUser(new User(null, "userone test", "userone", "1234", new ArrayList<>()));
@@ -42,12 +42,11 @@ public class UserserviceApplication {
 			User u5 = userService.saveUser(new User(null, "userfour test", "userfour", "1234", new ArrayList<>()));
 
 			userService.addRoleToUser(u1.getUsername(), r1.getName());
-			userService.addRoleToUser(u1.getUsername(), r3.getName());
-			userService.addRoleToUser(u3.getUsername(), r2.getName());
-			userService.addRoleToUser(u5.getUsername(), r3.getName());
-			userService.addRoleToUser(u4.getUsername(), r1.getName());
+			userService.addRoleToUser(u1.getUsername(), r2.getName());
+			userService.addRoleToUser(u2.getUsername(), r1.getName());
 			userService.addRoleToUser(u3.getUsername(), r1.getName());
-			userService.addRoleToUser(u2.getUsername(), r4.getName());
+			userService.addRoleToUser(u4.getUsername(), r2.getName());
+			userService.addRoleToUser(u5.getUsername(), r2.getName());
 
 			/*userService.addRoleToUser("Mary", "ROLE_MANAGER");
 			userService.addRoleToUser("testone", "ROLE_MANAGER");

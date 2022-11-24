@@ -18,6 +18,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,20 +27,22 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
 
+    @Autowired
     private final UserRepo userRepo;
-
+    @Autowired
     private final RoleRepo roleRepo;
-
+    @Autowired
     private final PasswordEncoder passwordEncoder;
 
 
+    //Fonction qui vérifie l'existance du user
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username);
         if(user == null){
-            log.error("le user n'existe pas la base de donnée");
-            throw new UsernameNotFoundException("le user n'existe pas la base de donnée");
+            log.error("le user {} n'existe pas la base de donnée", username);
+            throw new UsernameNotFoundException(username + "n'existe pas dans la base de donnée:");
         } else {
-            log.info("User existe dans la base de donnée: {}", username);
+            log.info("{} existe dans la base de donnée", username);
         }
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {
@@ -50,9 +53,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public User saveUser(User user) {
-        log.info("Saving new user {} to the database", user.getName());
+        //Affichage dans la console
+        log.info("User {} ajouter avec success dans la base", user.getName());
+        //Cryptage du mot de passe
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepo.save(user);
+        User userSave = userRepo.save(user);
+        return userSave;
     }
 
     @Override
@@ -70,7 +76,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getUser(String username) {
+    public User findByUsername(String username) {
         log.info("Fetching user {}", username);
         return userRepo.findByUsername(username);
     }
@@ -79,6 +85,41 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> getUsers() {
         log.info("Fetching all users");
         return userRepo.findAll();
+    }
+
+
+    @Override
+    public Optional<User> findUserById(Long id) {
+        return userRepo.findById(id);
+    }
+
+    @Override
+    public User updateUser(Long id, User user) {
+
+        Optional<User> retrievedUser=userRepo.findById(id);
+        if(retrievedUser==null)
+            try {
+                throw new Exception("User not found");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        userRepo.save(user);
+        return userRepo.findById(id).get();
+
+    }
+
+    @Override
+    public User deleteUser(Long userId) {
+
+        Optional<User> retrievedUser=userRepo.findById(userId);
+        if(retrievedUser==null)
+            try {
+                throw new Exception("User not found");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        userRepo.deleteById(userId);
+        return retrievedUser.get();
     }
 
 }
