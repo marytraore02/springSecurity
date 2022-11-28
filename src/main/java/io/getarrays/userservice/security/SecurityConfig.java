@@ -41,7 +41,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
         http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(STATELESS);
+        //http.sessionManagement().sessionCreationPolicy(STATELESS);
         http.authorizeRequests()
                 //.antMatchers("/api/admin/").hasRole("ROLE_ADMIN")
                 //.antMatchers("/api/user/").hasRole("ROLE_USER")
