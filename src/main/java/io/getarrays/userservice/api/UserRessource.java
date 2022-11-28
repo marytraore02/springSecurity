@@ -2,6 +2,7 @@ package io.getarrays.userservice.api;
 
 import io.getarrays.userservice.domain.Role;
 import io.getarrays.userservice.domain.User;
+import io.getarrays.userservice.repo.UserRepo;
 import io.getarrays.userservice.service.UserService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -27,6 +29,9 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class UserRessource {
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    UserRepo userRepo;
 
     //------------------------------------CRUD COLLABORATEUR----------------------------------->>
     @GetMapping("/collaborateurs")
@@ -40,6 +45,14 @@ public class UserRessource {
         //System.out.println(user.getUsername()+"  "+auth.getName());
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/collaborateur/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
+    }
+
+    @GetMapping("/all")
+    public String allAccess(Principal all) {
+
+        String user = "NOM D'UTILISATEUR: " + userRepo.findByUsername(all.getName()).getUsername() + "  EMAIL:  "+
+                userRepo.findByUsername(all.getName()).getEmail();
+        return "Bienvenue, " + user;
     }
 
     @PutMapping("/collaborateur/update/{ColId}")
@@ -68,6 +81,12 @@ public class UserRessource {
          userService.addRoleToUser(form.getUsername(), form.getRoleName());
          return ResponseEntity.ok().build();
     }
+
+
+    //-----------------------------------CRUD TEST----------------------------------------->
+
+
+
 
 }
 
