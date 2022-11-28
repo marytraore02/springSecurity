@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.*;
@@ -26,6 +27,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        /*auth.inMemoryAuthentication()
+                .withUser("springuser").password(passwordEncoder().encode("spring123"))
+                .roles("ROLE_USER")
+                .and()
+                .withUser("springadmin").password(passwordEncoder().encode("admin123"))
+                .roles("ROLE_ADMIN", "ROLE_USER");*/
         auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
     }
 
@@ -35,15 +42,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/api/login");
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(STATELESS);
-        http.authorizeRequests().antMatchers("/api/login/**").permitAll()
+        http.authorizeRequests()
+                //.antMatchers("/api/admin/").hasRole("ROLE_ADMIN")
+                //.antMatchers("/api/user/").hasRole("ROLE_USER")
+                .antMatchers("/api/login/**").permitAll()
         .antMatchers(GET, "/api/collaborateurs/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
         .antMatchers(POST, "/api/collaborateur/save/**").hasAnyAuthority("ROLE_ADMIN")
         .antMatchers(PUT, "/api/collaborateur/update/{ColId}/**").hasAnyAuthority("ROLE_ADMIN")
-                .antMatchers(DELETE, "/api/collaborateur/delete/{userId}/**").hasAnyAuthority("ROLE_ADMIN");
-        http.authorizeRequests().anyRequest().authenticated();
+                .antMatchers(DELETE, "/api/collaborateur/delete/{userId}/**").hasAnyAuthority("ROLE_ADMIN")
+        .anyRequest().authenticated()
+                .and()
+        .formLogin()////Connexion avec login par defaut de spring securite
+                .and()
+                .oauth2Login(); //Connexion avec Oauth2
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
+
+    /*@Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }*/
 
     @Bean
     @Override

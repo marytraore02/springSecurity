@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User saveUser(User user) {
         //Affichage dans la console
-        log.info("User {} ajouter avec success dans la base", user.getName());
+        log.info("User {} ajouter avec success dans la base", user.getUsername());
         //Cryptage du mot de passe
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User userSave = userRepo.save(user);
@@ -103,7 +103,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
+        log.info("Mise à jour effectuer avec succes");
         return userRepo.findById(id).get();
 
     }
@@ -119,6 +121,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 e.printStackTrace();
             }
         userRepo.deleteById(userId);
+        log.info("User supprimer avec succes");
         return retrievedUser.get();
     }
 

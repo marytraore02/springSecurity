@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.annotation.security.RolesAllowed;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
@@ -26,7 +27,6 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 public class UserRessource {
     @Autowired
     private final UserService userService;
-
 
     //------------------------------------CRUD COLLABORATEUR----------------------------------->>
     @GetMapping("/collaborateurs")

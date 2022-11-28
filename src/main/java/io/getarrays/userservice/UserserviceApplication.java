@@ -35,11 +35,11 @@ public class UserserviceApplication {
 			//Role r3 = userService.saveRole(new Role(null, "ROLE_MANAGER"));
 			//Role r4 = userService.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
-			User u1= userService.saveUser(new User(null, "mary", "marytraore", "1234", new ArrayList<>()));
-			User u2 = userService.saveUser(new User(null, "userone test", "userone", "1234", new ArrayList<>()));
-			User u3 = userService.saveUser(new User(null, "usertwo test", "usertwo", "1234", new ArrayList<>()));
-			User u4 = userService.saveUser(new User(null, "userthree test", "userthree", "1234", new ArrayList<>()));
-			User u5 = userService.saveUser(new User(null, "userfour test", "userfour", "1234", new ArrayList<>()));
+			User u1= userService.saveUser(new User(null, "marytraore", "marytraore@gmail.com", "1234", new ArrayList<>()));
+			User u2 = userService.saveUser(new User(null, "userone", "userone@gmail.com", "1234", new ArrayList<>()));
+			User u3 = userService.saveUser(new User(null, "usertwo", "usertwo@gmail.com", "1234", new ArrayList<>()));
+			User u4 = userService.saveUser(new User(null, "userthree", "userthree@gmail.com", "1234", new ArrayList<>()));
+			User u5 = userService.saveUser(new User(null, "userfour", "userfour@gmail.com", "1234", new ArrayList<>()));
 
 			userService.addRoleToUser(u1.getUsername(), r1.getName());
 			userService.addRoleToUser(u1.getUsername(), r2.getName());
