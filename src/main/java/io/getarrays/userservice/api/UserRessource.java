@@ -35,32 +35,28 @@ public class UserRessource {
 
     //------------------------------------CRUD COLLABORATEUR----------------------------------->>
     @GetMapping("/collaborateurs")
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> getUsers(){
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("/collaborateur/save")
-    //@PreAuthorize("hasRole('USER_ADMIN')")
+    @PreAuthorize("hasRole('USER_ADMIN')")
     public ResponseEntity<User>saveCollab(@RequestBody User user, Authentication auth){
         //System.out.println(user.getUsername()+"  "+auth.getName());
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/collaborateur/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
-    @GetMapping("/all")
-    public String allAccess(Principal all) {
-
-        String user = "NOM D'UTILISATEUR: " + userRepo.findByUsername(all.getName()).getUsername() + "  EMAIL:  "+
-                userRepo.findByUsername(all.getName()).getEmail();
-        return "Bienvenue, " + user;
-    }
 
     @PutMapping("/collaborateur/update/{ColId}")
+    @PreAuthorize("hasRole('USER_ADMIN')")
     public ResponseEntity<User> updateCollab(@PathVariable("ColId") Long ColId,@RequestBody User user) {
         return ResponseEntity.ok().body(userService.updateUser(ColId,user));
     }
 
     @DeleteMapping("/collaborateur/delete/{userId}")
+    @PreAuthorize("hasRole('USER_ADMIN')")
     public ResponseEntity<Object> deleteCollab(@PathVariable("userId") Long UserId) {
         userService.deleteUser(UserId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -71,6 +67,7 @@ public class UserRessource {
 
     //-----------------------------------ROLE----------------------------------------->
     @PostMapping("/role/save")
+    @PreAuthorize("hasRole('USER_ADMIN')")
     public ResponseEntity<Role>saveRole(@RequestBody Role role){
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
@@ -81,11 +78,6 @@ public class UserRessource {
          userService.addRoleToUser(form.getUsername(), form.getRoleName());
          return ResponseEntity.ok().build();
     }
-
-
-    //-----------------------------------CRUD TEST----------------------------------------->
-
-
 
 
 }

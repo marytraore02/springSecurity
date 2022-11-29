@@ -63,13 +63,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public Role saveRole(Role role) {
-        log.info("Saving new role {} to the database", role.getName());
+        log.info("Un nouveau role enregistrer dans la base: {}", role.getName());
         return roleRepo.save(role);
     }
 
     @Override
     public void addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to user {}", username,roleName);
+        log.info("Le role {} est attribué à l'utilisateur {}",roleName,username);
         User user = userRepo.findByUsername(username);
         Role role = roleRepo.findByName(roleName);
         user.getRoles().add(role);
@@ -83,7 +83,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<User> getUsers() {
-        log.info("Fetching all users");
+        log.info("Affichage de tout les users");
         return userRepo.findAll();
     }
 
@@ -99,7 +99,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<User> retrievedUser=userRepo.findById(id);
         if(retrievedUser==null)
             try {
-                throw new Exception("User not found");
+                throw new Exception("Utilisateur introuvable");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Optional<User> retrievedUser=userRepo.findById(userId);
         if(retrievedUser==null)
             try {
-                throw new Exception("User not found");
+                throw new Exception("Utilisateur introuvable");
             } catch (Exception e) {
                 e.printStackTrace();
             }
