@@ -41,7 +41,7 @@ public class UserRessource {
     }
 
     @PostMapping("/collaborateur/save")
-    @PreAuthorize("hasRole('USER_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<User>saveCollab(@RequestBody User user, Authentication auth){
         //System.out.println(user.getUsername()+"  "+auth.getName());
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/collaborateur/save").toUriString());

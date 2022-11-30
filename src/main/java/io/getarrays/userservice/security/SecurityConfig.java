@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //.antMatchers("/api/test/**").permitAll()
                 //.antMatchers(GET, "/api/test/user/**").hasAnyAuthority("ROLE_USER")
                 //.antMatchers(GET, "/api/collaborateurs/**").hasAnyAuthority("ROLE_USER", "ROLE_ADMIN")
-        //.antMatchers(POST, "/api/collaborateur/save/**").hasAnyAuthority("ROLE_ADMIN")
+        .antMatchers(POST, "/api/collaborateur/save/**").hasAnyAuthority("ROLE_ADMIN")
         //.antMatchers(PUT, "/api/collaborateur/update/{ColId}/**").hasAnyAuthority("ROLE_ADMIN")
                 //.antMatchers(DELETE, "/api/collaborateur/delete/{userId}/**").hasAnyAuthority("ROLE_ADMIN")
         .anyRequest().authenticated()
